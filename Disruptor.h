@@ -27,9 +27,13 @@ int **Reader_dependency_list;
 	This records all reader dependency.
 
 */
+Job *ringbuffer;
+/*
+*/
+
 void (*Create_ring_buffer)();
-
-
+/*
+*/
 
 int (*get_empty_job)(void);
 /*
