@@ -19,12 +19,12 @@ char worker;
 extern struct Disruptor
 {
 
-int (*Create_Job_list)(int,int);
+int (*Create_Job_list)(const int,int);
 /*
 	Create job list for writer and reader.
 
 	@parameter:
-		   int : job list length
+		   const int : job list length
 		   int : reader number
 	@return:
 		1 : sucess
@@ -32,7 +32,7 @@ int (*Create_Job_list)(int,int);
 	@code:
 		int info_init = Job_Disruptor.Create_Job_list(10,5);
 
-		|This means that has a list of ten jobs and five readers.
+		|This means that has a list of ten jobs and five readers.The code of readers are 1,2,3,4 and 5.
 
 */
 
@@ -56,7 +56,7 @@ void (*commit_job)(int,Job);
 
 */
 
-int (*Register_Reader)(int,int *,int);
+int (*Register_Reader)(const int,const int *,const int);
 /*
 	This function is used to register reader and build dependency with other readers.
 
