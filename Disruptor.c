@@ -1,15 +1,16 @@
 #include <stdlib.h>
 #include "Disruptor.h"
 #define Max_ailable_Job_index 0
-#define sucess 1
+#define success 1
 #define failure 0
 
-typedef struct reader reader;
+typedef struct reader_position reader_position;
 
-struct reader
+struct reader_position
 {
 int reader_index;
 }
+/*consider cache line padding*/
 
 
 static Job *Ringbuffer;
@@ -24,7 +25,7 @@ static int Ringbuffer_length;
 	It is used to get the ringbuffer real index.
 */
 
-static int *Reader_last_search_list;
+static reader_position *Reader_last_search_list;
 /*
 	This records all reader last search index by  
 get_Max_available_job_index.Reader_last_search_list[0] isn't used.
@@ -42,17 +43,24 @@ static int **Reader_dependency_list;
 
 */
 
-static int *Reader_index;
+static reader_position *Reader_index;
 /*
-	This records all reader index and Max_ailable_Job_index.
+	It records all reader index and Max_ailable_Job_index.
 
-	Reader_index[Max_ailable_Job_index] is writed by commit_job.It is the begin that readers can read for the max search index reader.  
+	Reader_index[Max_ailable_Job_index] is writed by commit_job.It is the begin that readers can read for the max search index reader.Other index is writed by get_Max_available_job_index.  
 
 */
 
 static int Reader_number;
 /*
+	It records reader number by Create_Job_list.
 
+	Reader_number is used to check the reader_number by Register_Reader.
+
+*/
+
+static int *Dependency_list_number;
+/*
 */
 
 int _Create_Job_list_(const int job_list_length,int reader_number)
@@ -72,13 +80,15 @@ int _Create_Job_list_(const int job_list_length,int reader_number)
 
 	Ringbuffer = (Job *)malloc(job_list_length * sizeof(Job));
 
-	Reader_last_search_list = (int *)malloc(reader_number * sizeof(reader));
+	Reader_last_search_list = (reader_position *)malloc(reader_number * sizeof(reader_position));
 
-	Reader_index = (int *)malloc(reader_number * sizeof(reader));
+	Reader_index = (reader_position *)malloc(reader_number * sizeof(reader_position));
 
 	Reader_dependency_list = (int **)malloc(reader_number * sizeof(int *));
 
-	if((Ringbuffer == NULL)||(Reader_index == NULL)||(Reader_dependency_list == NULL)||(Reader_dependency_list == NULL))
+	Dependency_list_number = (int *)malloc(reader_number * sizeof(int));
+
+	if((Ringbuffer == NULL)||(Reader_index == NULL)||(Reader_dependency_list == NULL)||(Reader_dependency_list == NULL)||(Dependency_list_number == NULL))
 		{
 			if(Ringbuffer != NULL)
 				{
@@ -100,6 +110,11 @@ int _Create_Job_list_(const int job_list_length,int reader_number)
 					free(Reader_last_search_list);
 				}
 
+			if(Dependency_list_number != NULL)
+				{
+					free(Dependency_list_number);
+				}			
+
 			return failure;
 		}	
 
@@ -112,7 +127,7 @@ int _Create_Job_list_(const int job_list_length,int reader_number)
 			Reader_last_search_list[i]	= 0;
 		}
 
-	return sucess;
+	return success;
 }
 
 int _Register_Reader_(const int reader_index,const int *reader_dependency_list,const int list_length)
@@ -140,7 +155,9 @@ int _Register_Reader_(const int reader_index,const int *reader_dependency_list,c
 
 			(*(Reader_dependency_list[reader_index])) = Max_ailable_Job_index;
 
-			return sucess;
+			Dependency_list_number[reader_index] = 1;
+
+			return success;
 		}
 
 	/*reader_dependency_list isn't NULL*/
@@ -159,7 +176,9 @@ int _Register_Reader_(const int reader_index,const int *reader_dependency_list,c
 			Reader_dependency_list[reader_index][i] = reader_dependency_list[i];
 		}
 
-	return sucess;	
+	Dependency_list_number[reader_index] = list_length;
+
+	return success;	
 }
 
 int _get_empty_job_()
@@ -182,4 +201,8 @@ struct Disruptor
 {
 .Create_Job_list = _Create_Job_list_,
 .Register_Reader = _Register_Reader_,
-}
+.get_empty_job = _get_empty_job_,
+.commit_job = _commit_job_,
+.get_Max_available_job_index = _get_Max_available_job_index_,
+.get_next_job = _get_next_job_,
+};

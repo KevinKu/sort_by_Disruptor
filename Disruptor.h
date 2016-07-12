@@ -11,10 +11,16 @@ struct Job
 {
 char job;
 int *array_head;
-int number;
+int array_length;
 char worker;
 };
 
+/*
+job		:sort or separate
+array_head	:sorted list
+array_length	:the list length
+worker		:which thread do this job
+*/
 
 extern struct Disruptor
 {
@@ -27,7 +33,7 @@ int (*Create_Job_list)(const int,int);
 		   const int : job list length
 		   int : reader number
 	@return:
-		1 : sucess
+		1 : success
 		0 : failure
 	@code:
 		int info_init = Job_Disruptor.Create_Job_list(10,5);
@@ -38,7 +44,7 @@ int (*Create_Job_list)(const int,int);
 
 int (*get_empty_job)(void);
 /*
-	This is used for producer.Before producer writes a job to Disruptor,producer should call get_empty_job for getting an empty job index. 
+	This is used for writer.Before producer writes a job to Disruptor,producer should call get_empty_job for getting an empty job index. 
 	@return :  
 		job index  : This index is used by commit_job.
 */
@@ -61,17 +67,17 @@ int (*Register_Reader)(const int,const int *,const int);
 	This function is used to register reader and build dependency with other readers.
 
 	Notice:
-	       This function should be called after Create_Job_list.
+	       This function should be called after Create_Job_list return success.
 
 	@parameter:
-		   int : the index of reader.It should be bigger than zero.And,it should be smaller than reader number or equal to.
-		   int * : the dependency list of the reader with first int.If it is NULL,the register reader work after Max_ailable_Job_index(see ./Disruptor.c).
-		   int : the dependency list length
+		   const int : the index of reader.It should be bigger than zero.And,it should be smaller than reader number or equal to.
+		   const int * : the dependency list of the reader with first int.If it is NULL,the register reader work after Max_ailable_Job_index(see ./Disruptor.c).
+		   const int : the dependency list length
 		   Notice: 
 			  Dependency list should not have the first int.
 			  The function don't check whether third parameter is equal to the length of dependency list.
 	@return:
-		1 : sucess
+		1 : success
 		0 : failure
 	@code:
 	      int dependency_list[2];
