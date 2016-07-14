@@ -25,7 +25,7 @@ worker		:which thread do this job
 extern struct Disruptor
 {
 
-int (*Create_Job_list)(const int,int);
+int (*Create_Job_list)(const int,const int);
 /*
 	Create job list for writer and reader.
 

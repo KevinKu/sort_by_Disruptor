@@ -7,18 +7,23 @@ CC = gcc
 
 
 
-bluid_Disruptor_test:test_main.o test_Disruptor.o
+build_Disruptor_test:test_main.o test_Disruptor.o
 	$(CC) $(Disruptor_lflags)
+	-rm -f *.o
 
 test_main.o:
 	$(CC) $(Disruptor_test_cflags) test_main.c
 
 test_Disruptor.o:
 	$(CC) $(Disruptor_test_cflags) Disruptor.c
+	
 
-bluid_Disruptor.o:
+build_Disruptor.o:
 	$(CC) $(Disruptor_cflags) Disruptor.c
+	-rm -f *.o
 
 .PHONY = clean
 clean:
 	-rm -rf $(clean_file)
+
+
