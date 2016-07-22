@@ -278,7 +278,30 @@ static int first_empty_job_index = 0;
 
 void _commit_job_(int write_index,Job job)
 {
-	return;
+
+int real_index = write_index % Ringbuffer_length;
+
+	for(;;)
+	{
+
+	__sync_synchronize();
+
+		if((Reader_index[Job_head_code].reader_index + 1) == write_index)
+		{
+
+		Ringbuffer[real_index].job 	    = job.job;
+		Ringbuffer[real_index].array_head   = job.array_head;
+		Ringbuffer[real_index].array_length = job.array_length;
+		Ringbuffer[real_index].worker 	    = job.worker;
+
+		Reader_index[Job_head_code].reader_index = write_index;
+
+		__sync_synchronize();
+
+		return;
+
+		}
+	}
 }
 
 int _get_Max_available_job_index_(int reader_code)
