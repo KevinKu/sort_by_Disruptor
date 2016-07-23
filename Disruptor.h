@@ -44,6 +44,8 @@ int (*Create_Job_list)(const int,const int);
 
 int (*get_empty_job)(void);
 /*
+	Notice:This function should be used after all reader register.
+
 	This is used for writer.Before producer writes a job to Disruptor,producer should call get_empty_job for getting an empty job index. 
 	@return :  
 		job index  : This index is used by commit_job.

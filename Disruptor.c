@@ -12,6 +12,13 @@ int reader_index;
 };
 /*consider cache line padding*/
 
+typedef struct padding_int padding_int;
+
+struct padding_int
+{
+int index; 
+};
+/*consider cache line padding*/
 
 static Job *Ringbuffer;
 /*
@@ -246,19 +253,19 @@ int _get_empty_job_(void)
 {
 
 int write_index;
-static int first_empty_job_index = 0;
+static padding_int first_empty_job_index = {.index=0,};
 
 	for(;;)
 	{
 
 		__sync_synchronize();
 
-		write_index = first_empty_job_index;
+		write_index = first_empty_job_index.index;
 
 		if((write_index - get_Min_reader_index()) < Ringbuffer_length)
 		{
 		
-			if(__sync_bool_compare_and_swap(&first_empty_job_index,write_index,write_index+1))
+			if(__sync_bool_compare_and_swap(&(first_empty_job_index.index),write_index,write_index + 1))
 			{
 
 			__sync_synchronize();
@@ -286,7 +293,7 @@ int real_index = write_index % Ringbuffer_length;
 
 	__sync_synchronize();
 
-		if((Reader_index[Job_head_code].reader_index + 1) == write_index)
+		if(Reader_index[Job_head_code].reader_index  == write_index)
 		{
 
 		Ringbuffer[real_index].job 	    = job.job;
@@ -294,7 +301,8 @@ int real_index = write_index % Ringbuffer_length;
 		Ringbuffer[real_index].array_length = job.array_length;
 		Ringbuffer[real_index].worker 	    = job.worker;
 
-		Reader_index[Job_head_code].reader_index = write_index;
+		Reader_index[Job_head_code].reader_index = write_index
+		+ 1;
 
 		__sync_synchronize();
 
