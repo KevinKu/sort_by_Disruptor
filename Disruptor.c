@@ -83,7 +83,6 @@ static int Reader_index_length;
 
 	Reader_index_length is used to check the reader_number by Register_Reader.It is used to find min reader index by get_Min_reader_index.
 
-
 */
 
 static int *Dependency_list_number;
@@ -300,6 +299,8 @@ int real_index = write_index % Ringbuffer_length;
 		Ringbuffer[real_index].array_head   = job.array_head;
 		Ringbuffer[real_index].array_length = job.array_length;
 		Ringbuffer[real_index].worker 	    = job.worker;
+
+		__sync_synchronize();
 
 		Reader_index[Job_head_code].reader_index = write_index
 		+ 1;
