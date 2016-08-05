@@ -1,6 +1,20 @@
 import gdb
 import string
 
+class init_env_and_build_reader_dependency(gdb.Command):
+
+	def __init__(self):
+
+		super(init_env_and_build_reader_dependency,self).__init__("init_env_and_build_reader_dependency",gdb.COMMAND_USER)
+
+	def invoke(self,arg,from_tty):
+
+		reader_data = open(arg)
+
+		(job_list_num,reader_num) = (reader_data.readline()).split(" ")
+
+		
+
 class test_get_empty_job_env_init(gdb.Command):
 
 	def __init__(self):
