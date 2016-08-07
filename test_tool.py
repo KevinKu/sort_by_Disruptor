@@ -4,16 +4,58 @@ import string
 class init_env_and_build_reader_dependency(gdb.Command):
 
 	def __init__(self):
-
 		super(init_env_and_build_reader_dependency,self).__init__("init_env_and_build_reader_dependency",gdb.COMMAND_USER)
 
-	def invoke(self,arg,from_tty):
+	def invoke(self,file_name,from_tty):
 
-		reader_data = open(arg)
+		reader_data=open(file_name)
 
-		(job_list_num,reader_num) = (reader_data.readline()).split(" ")
+		test_data=reader_data.readline()
 
+		num=test_data.split(" ")
 		
+		job_list_num = num[0]
+
+		reader_num = num[1]
+
+		c = "p Job_Disruptor.Create_Job_list("+job_list_num+","+reader_num+")"
+		gdb.execute(c,True,True)
+
+		c = "set $_h=(int*)malloc(sizeof(int)*"+reader_num+")"
+
+		gdb.execute(c,True,True)
+
+		i=1
+
+		while(i <= int(reader_num)):
+
+			reader_data.readline()
+
+			reader_code = reader_data.readline()
+
+			dependency_list_num = reader_data.readline()
+
+			dependency_code = (reader_data.readline()).split(" ")
+
+			_i=0
+
+
+			while(_i < int(dependency_list_num)):
+
+				c = "p $_h["+str(_i)+"]="+dependency_code[_i]
+				gdb.execute(c,True,True)
+
+				_i = _i + 1
+			
+			c = "p Job_Disruptor.Register_Reader("+reader_code+",$_h,"+dependency_list_num+")"
+
+			gdb.execute(c,True,True)
+
+			i = i + 1
+
+		c = "p free($_h)"
+
+		gdb.execute(c,True,True)
 
 class test_get_empty_job_env_init(gdb.Command):
 
@@ -57,3 +99,5 @@ class insert_job_list_from_file(gdb.Command):
 
 insert_job_list_from_file()
 test_get_empty_job_env_init()
+init_env_and_build_reader_dependency()
+
