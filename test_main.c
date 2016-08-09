@@ -5,9 +5,9 @@
 *
 *		test Job_Disruptor.commit_job
 *
-*
+*	TEST_THREAD_GET_EMPTY_JOB:
 *	
-*
+*		test Job_Disruptor.get_empty_job
 *
 *
 *
@@ -29,12 +29,55 @@ int start = 1;
 
 int test_thread_num;
 
+int test_reader_num;
+
 pthread_t test_thread_a,test_thread_b;
 
 
 Job test_job_list_a[job_number];
 
 Job test_job_list_b[job_number];
+
+void *test_get_Max_available_job_index(void *arg)
+{
+
+const int reader = (*(int*)arg);
+
+while(start == 1){__sync_synchronize();}
+
+int Max_job_index;
+
+	for(;;)
+	{
+
+	Max_job_index = Job_Disruptor.get_Max_available_job_index(reader);
+
+	}
+
+
+return (void*)NULL;
+
+}
+
+
+void test_multi_thread_get_Max_available_job_index(void)
+{
+
+int i = 0;
+
+pthread_t thread_id;
+
+	for(;i < test_reader_num;i++)
+	{
+
+		pthread_create(&thread_id,0,test_get_Max_available_job_index,i);
+
+	}
+
+return;
+
+}
+
 
 
 void *test_multi_thread_commit_job(void *arg)
@@ -63,6 +106,7 @@ return (void*)NULL ;
 
 void *test_get_empty_job(void* arg)
 {
+
 while(start == 1){__sync_synchronize();}
 
 Job_Disruptor.get_empty_job();
@@ -107,8 +151,11 @@ test_create_multi_thread(test_get_empty_job,0,test_thread_num);
 
 #endif
 
+#ifdef TEST_THREAD_GET_MAX_AVAILABLE_JOB_INDEX
 
-#ifdef
+test_multi_thread_get_Max_available_job_index();
+
+#endif
 
 
 return 0;
