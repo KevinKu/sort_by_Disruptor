@@ -1,3 +1,5 @@
+#define TEST_THREAD_GET_MAX_AVAILABLE_JOB_INDEX
+
 /*
 *Test define use:
 *
@@ -9,16 +11,17 @@
 *	
 *		test Job_Disruptor.get_empty_job
 *
+*	TEST_THREAD_GET_MAX_AVAILABLE_JOB_INDEX:
+*
+*		test get_Max_available_job_index
 *
 *
 */
 
 
-#define TEST_THREAD_COMMIT_JOB
-
-
 #include "Disruptor.h"
 #include <pthread.h>
+#include <stdlib.h>
 #define waiting 0
 #define non_waiting 1
 #define job_number 5
@@ -30,6 +33,8 @@ int start = 1;
 int test_thread_num;
 
 int test_reader_num;
+
+/*determine reader code number.It is used by test_multi_thread_get_Max_available_job_index.One thread has only one reader code. */
 
 pthread_t test_thread_a,test_thread_b;
 
@@ -45,7 +50,7 @@ const int reader = (*(int*)arg);
 
 while(start == 1){__sync_synchronize();}
 
-int Max_job_index;
+int Max_job_index = 0;
 
 	for(;;)
 	{
@@ -63,14 +68,18 @@ return (void*)NULL;
 void test_multi_thread_get_Max_available_job_index(void)
 {
 
-int i = 0;
+int *reader_code = (int *)malloc(test_reader_num * sizeof(int));
 
 pthread_t thread_id;
 
-	for(;i < test_reader_num;i++)
+int i = 0;
+
+	for(;i  < test_reader_num;i++)
 	{
 
-		pthread_create(&thread_id,0,test_get_Max_available_job_index,i);
+		reader_code[i] = i + 1;		
+
+		pthread_create(&thread_id,0,test_get_Max_available_job_index,&(reader_code[i]));
 
 	}
 

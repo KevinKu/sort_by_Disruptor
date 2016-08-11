@@ -19,3 +19,26 @@ def  print_job_list
 		end
 
 end
+
+
+
+def print_reader_index
+
+	set $_i = 0
+
+	p "reader code"
+
+	p $_i
+
+	while($_i <= $arg1)
+
+
+		p ($arg0)[$_i]
+
+		p "reader code"
+
+		p $_i = $_i + 1
+
+	end
+
+end
