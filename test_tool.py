@@ -1,6 +1,63 @@
 import gdb
 import string
 
+
+class init_writer_test_job_data_from_file(gdb.Command):
+
+	def __init__(self):
+		super(init_writer_test_job_data_from_file,self).__init__("init_writer_test_job_data_from_file",gdb.COMMAND_USER)
+
+	def invoke(self,file_name,from_tty): 
+
+		writer_info = open(file_name)
+
+		writer_num = writer_info.readline()
+
+		writer_num = writer_num.split(" ")
+
+		writer_num = writer_num[0]
+
+		i = 0
+
+		c = "p test_writer_num="+writer_num
+
+		gdb.execute(c,True,True)
+
+		c = "p test_job_length=(int *)malloc(sizeof(int)*"+writer_num+")"
+
+		gdb.execute(c,True,True)
+
+		c = "p test_job_list=(Job **)malloc(sizeof(Job*)*"+writer_num+")"
+
+		gdb.execute(c,True,True)
+
+		writer_info.readline()
+
+		while(i < int(str(writer_num))):
+
+			writer_job_list_info = writer_info.readline()
+
+
+			tmp = writer_job_list_info.split(" ")
+
+			print(tmp)
+
+			(list_length,job_list_file_name) = writer_job_list_info.split(" ")
+
+			print("hihi")
+			c = "p test_job_list["+i+"]=(Job *)malloc(sizeof(Job)*"+list_length+")"
+
+			gdb.execute(c,True,True)
+
+
+			c = "insert_job_list_from_file test_job_list["+i+"] "+list_length +" "+job_list_file_name
+
+			gdb.execute(c,True,True)
+
+			i = i + 1
+
+
+
 class init_env_and_build_reader_dependency(gdb.Command):
 
 	def __init__(self):
@@ -57,6 +114,8 @@ class init_env_and_build_reader_dependency(gdb.Command):
 
 		gdb.execute(c,True,True)
 
+		print("init success")
+
 class test_get_empty_job_env_init(gdb.Command):
 
 	def __init__(self):
@@ -86,18 +145,63 @@ class insert_job_list_from_file(gdb.Command):
 			if i < int(list_length):
 				data=line.split(" ")
 				c="p "+job_list_head+"["+str(i)+"]"+".job="+"'"+data[0]+"'"
-				gdb.execute(c,False,False)
+				gdb.execute(c,True,True)
 				c="p "+job_list_head+"["+str(i)+"]"+".array_head="+data[1]
-				gdb.execute(c,False,False)
+				gdb.execute(c,True,True)
 				c="p "+job_list_head+"["+str(i)+"]"+".array_length="+data[2]
-				gdb.execute(c,False,False)
+				gdb.execute(c,True,True)
 				c="p "+job_list_head+"["+str(i)+"]"+".worker="+"'"+data[3]+"'"
-				gdb.execute(c,False,False)
+				gdb.execute(c,True,True)
 				i = i + 1
-	
+
+		print("insert success")
 
 
 insert_job_list_from_file()
+
+"""
+insert_job_list_from_file 
+
+Use : 
+
+insert_job_list_from_file job_list_name job_list_length file_name
+
+
+"""
+
+
 test_get_empty_job_env_init()
+
+"""
+
+test_get_empty_job_env_init
+
+Use : 
+
+test_get_empty_job_env_init job_list_length
+
+"""
+
+
 init_env_and_build_reader_dependency()
+
+"""
+init_env_and_build_reader_dependency
+
+Use : 
+
+init_env_and_build_reader_dependency file_name
+
+"""
+
+init_writer_test_job_data_from_file()
+
+"""
+init_writer_test_job_data_from_file
+
+Use :
+
+init_writer_test_job_data_from_file file_name
+
+"""
 

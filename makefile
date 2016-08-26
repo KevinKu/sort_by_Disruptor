@@ -1,7 +1,7 @@
 clean_file = *.o test_Disruptor
-Disruptor_test_cflags = -g -c -std=gnu99 -Wall
+Disruptor_test_cflags = -g -c -std=gnu99 -Wall -pthread
 Disruptor_cflags = -std=gnu99 -Wall -c
-Disruptor_lflags = -o test_Disruptor test_main.o Disruptor.o 
+Disruptor_lflags =  -pthread -o test_Disruptor test_main.o Disruptor.o 
 CC = gcc
 
 

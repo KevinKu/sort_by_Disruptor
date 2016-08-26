@@ -22,7 +22,7 @@ end
 
 
 
-def print_reader_index
+def print_reader_code_index
 
 	set $_i = 0
 

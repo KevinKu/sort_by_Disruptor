@@ -47,12 +47,19 @@ int (*get_empty_job)(void);
 	Notice:This function should be used after all reader register.
 
 	This is used for writer.Before producer writes a job to Disruptor,producer should call get_empty_job for getting an empty job index. 
+	
 	@return :  
 		job index  : This index is used by commit_job.
 */
 void (*commit_job)(int,Job);
 /*
 	Notice: This function only be used after get_empty_job.
+
+	This function is used to write a job in job list.
+	
+	@parameter:
+		   int:the index of get_empty_job's return.
+		   Job:job which be written in job list
 
 */
 
@@ -61,7 +68,9 @@ void (*commit_job)(int,Job);
 	Simple code for get_empty_job and commit_job.	
 
 	@code :
+	       current_index = Job_Disruptor.get_empty_job();
 
+	       Job_Disruptor.commit_job(current_index,job_array[i]);	
 */
 
 int (*Register_Reader)(const int,const int *,const int);
@@ -90,9 +99,36 @@ int (*Register_Reader)(const int,const int *,const int);
 	      |Then,reader 3 will work after reader 1 and reader 2.
 
 */
-int (*get_Max_available_job_index)(int);
-Job (*get_next_job)(int);
 
+
+int (*get_Max_available_job_index)(int);
+/*
+	This function is used to get max read job list index.	
+
+	Notice:
+		The return value isn't used by get_next_job.
+
+	@parameter:
+		   int : reader code
+	@return:
+		the min dependency reader index
+	@code:
+
+*/
+Job (*get_next_job)(int);
+/*
+
+	This function is used to get job data.
+
+	@parameter:
+		   int : ringbuffer position.It should be smaller than get_Max_available_job_index return value.
+
+	@return:
+		Job : work job.	
+
+	@code:
+
+*/
 
 
 }Job_Disruptor;
