@@ -40,23 +40,28 @@ class init_writer_test_job_data_from_file(gdb.Command):
 
 			tmp = writer_job_list_info.split(" ")
 
-			print(tmp)
+			tmp_data = writer_job_list_info.split(" ")
 
-			(list_length,job_list_file_name) = writer_job_list_info.split(" ")
+			list_length = tmp_data[0]
 
-			print("hihi")
-			c = "p test_job_list["+i+"]=(Job *)malloc(sizeof(Job)*"+list_length+")"
+			job_list_file_name = tmp_data[1]
+
+
+			c = "p test_job_list["+str(i)+"]=(Job *)malloc(sizeof(Job)*"+list_length+")"
 
 			gdb.execute(c,True,True)
 
+			c = "p test_job_length["+str(i)+"]= "+list_length
 
-			c = "insert_job_list_from_file test_job_list["+i+"] "+list_length +" "+job_list_file_name
+			gdb.execute(c,True,True)
+
+			c = "insert_job_list_from_file test_job_list["+str(i)+"] "+list_length +" "+job_list_file_name
 
 			gdb.execute(c,True,True)
 
 			i = i + 1
 
-
+		print("init success")
 
 class init_env_and_build_reader_dependency(gdb.Command):
 
