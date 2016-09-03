@@ -1,6 +1,55 @@
 import gdb
 import string
 
+class init_test_job_list_and_reader_dependency(gdb.Command):
+
+	def __init__(self):
+		super(init_test_job_list_and_reader_dependency,self).__init__("init_test_job_list_and_reader_dependency",gdb.COMMAND_USER)
+
+	def invoke(self,file_name,from_tty):
+
+
+		(job_list_file,reader_dependency_file) = file_name.split(" ")
+
+		job_list_info = open(job_list_file)
+
+		tmp = job_list_info.readline()
+
+		_tmp = tmp.split(" ")
+
+		job_list_length = _tmp[0]
+
+		reader_num = _tmp[1]
+
+		c = "init_job_list "+job_list_length+" "+reader_num
+
+		gdb.execute(c,True,True)
+
+		c = "init_reader_dependency "+reader_dependency_file
+
+		gdb.execute(c,True,True)
+
+		print("success")
+
+
+		
+	
+
+class init_job_list(gdb.Command):
+
+	def __init__(self):
+		super(init_job_list,self).__init__("init_job_list",gdb.COMMAND_USER)
+
+	def invoke(self,arg,from_tty):
+
+		(job_list_length,reader_num)=arg.split(" ")
+
+		c = "p Job_Disruptor.Create_Job_list("+ job_list_length +","+ reader_num +")"
+
+		gdb.execute(c,True,True)
+
+		print("success")
+
 
 class init_writer_test_job_data_from_file(gdb.Command):
 
@@ -63,10 +112,10 @@ class init_writer_test_job_data_from_file(gdb.Command):
 
 		print("init success")
 
-class init_env_and_build_reader_dependency(gdb.Command):
+class init_reader_dependency(gdb.Command):
 
 	def __init__(self):
-		super(init_env_and_build_reader_dependency,self).__init__("init_env_and_build_reader_dependency",gdb.COMMAND_USER)
+		super(init_reader_dependency,self).__init__("init_reader_dependency",gdb.COMMAND_USER)
 
 	def invoke(self,file_name,from_tty):
 
@@ -75,13 +124,8 @@ class init_env_and_build_reader_dependency(gdb.Command):
 		test_data=reader_data.readline()
 
 		num=test_data.split(" ")
-		
-		job_list_num = num[0]
 
-		reader_num = num[1]
-
-		c = "p Job_Disruptor.Create_Job_list("+job_list_num+","+reader_num+")"
-		gdb.execute(c,True,True)
+		reader_num = num[0]
 
 		c = "set $_h=(int*)malloc(sizeof(int)*"+reader_num+")"
 
@@ -188,7 +232,7 @@ test_get_empty_job_env_init job_list_length
 """
 
 
-init_env_and_build_reader_dependency()
+init_reader_dependency()
 
 """
 init_env_and_build_reader_dependency
@@ -196,6 +240,8 @@ init_env_and_build_reader_dependency
 Use : 
 
 init_env_and_build_reader_dependency file_name
+
+Test_main.c parameter : 
 
 """
 
@@ -208,5 +254,43 @@ Use :
 
 init_writer_test_job_data_from_file file_name
 
+Test_main.c parameter : 
+
+test_writer_num , test_job_length , test_job_list 
+
 """
+
+init_job_list()
+
+"""
+init_job_list
+
+Use : 
+
+init_job_list job_list_length reader_number
+
+Test_main.c parameter :
+
+none
+
+"""
+
+init_test_job_list_and_reader_dependency()
+
+
+"""
+init_test_job_list_and_reader_dependency
+
+Use :
+
+init_test_job_list_and_reader_dependency job_list_info_file_name
+
+ reader_dependency_info_file_name
+
+Test_main.c parameter :
+
+test_reader_num
+
+"""
+
 

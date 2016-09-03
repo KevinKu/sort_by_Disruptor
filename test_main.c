@@ -82,6 +82,8 @@ test_writer_num determines writer number.One thread has only one writer.
 
 Use : test_multi_thread_writer_and_reader
 
+Gdb test command : init_writer_test_job_data_from_file
+
 */
 
 
@@ -93,7 +95,7 @@ test_job_length is the test job data number list.
 
 Use : test_multi_thread_writer_and_reader
 
-Gdb command :
+Gdb test command : init_writer_test_job_data_from_file
 
 
 */
@@ -106,7 +108,7 @@ test_job_list is the job list for every writer.
 
 Use : test_multi_thread_writer_and_reader
 
-Gdb command : 
+Gdb test command : init_writer_test_job_data_from_file
 
 */
 
@@ -146,7 +148,7 @@ i = 0;
 	}
 
 
-/*create reader thread*/
+/*create reader thread. One thread has only one reader.*/
 
 
 return;
