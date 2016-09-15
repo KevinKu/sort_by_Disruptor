@@ -1,7 +1,34 @@
 import gdb
 import string
 
+class test_gdb_python_command(gdb.Command):
+
+	"test help"
+
+	def __init__(self):
+
+		super(test_gdb_python_command,self).__init__("test_gdb_python_command",gdb.COMMAND_USER)
+
+	def invoke(self,arg,from_tty):
+
+
+
+		print("gdb test")
+
+
 class init_test_job_list_and_reader_dependency(gdb.Command):
+
+	"""
+	Use :
+
+	init_test_job_list_and_reader_dependency job_list_info_file_name reader_dependency_info_file_name
+
+	Test_main.c parameter :
+
+	test_reader_num
+
+	"""
+
 
 	def __init__(self):
 		super(init_test_job_list_and_reader_dependency,self).__init__("init_test_job_list_and_reader_dependency",gdb.COMMAND_USER)
@@ -29,6 +56,8 @@ class init_test_job_list_and_reader_dependency(gdb.Command):
 
 		gdb.execute(c,True,True)
 
+		
+
 		print("success")
 
 
@@ -37,6 +66,16 @@ class init_test_job_list_and_reader_dependency(gdb.Command):
 
 class init_job_list(gdb.Command):
 
+	"""
+	Use : 
+
+	init_job_list job_list_length reader_number
+
+	Test_main.c parameter :
+
+	none
+
+	"""
 	def __init__(self):
 		super(init_job_list,self).__init__("init_job_list",gdb.COMMAND_USER)
 
@@ -53,6 +92,16 @@ class init_job_list(gdb.Command):
 
 class init_writer_test_job_data_from_file(gdb.Command):
 
+	"""
+	Use :
+
+	init_writer_test_job_data_from_file file_name
+
+	Test_main.c parameter : 
+
+	test_writer_num , test_job_length , test_job_list 
+
+	"""
 	def __init__(self):
 		super(init_writer_test_job_data_from_file,self).__init__("init_writer_test_job_data_from_file",gdb.COMMAND_USER)
 
@@ -114,6 +163,14 @@ class init_writer_test_job_data_from_file(gdb.Command):
 
 class init_reader_dependency(gdb.Command):
 
+	"""
+	Use : 
+
+	init_reader_dependency file_name
+
+	Test_main.c parameter : 
+
+	"""
 	def __init__(self):
 		super(init_reader_dependency,self).__init__("init_reader_dependency",gdb.COMMAND_USER)
 
@@ -127,6 +184,16 @@ class init_reader_dependency(gdb.Command):
 
 		reader_num = num[0]
 
+		c = "p test_reader_num="+reader_num
+
+		try:
+
+			gdb.execute(c,True,True)
+
+		except e:
+
+			pass
+			
 		c = "set $_h=(int*)malloc(sizeof(int)*"+reader_num+")"
 
 		gdb.execute(c,True,True)
@@ -167,6 +234,12 @@ class init_reader_dependency(gdb.Command):
 
 class test_get_empty_job_env_init(gdb.Command):
 
+	"""
+	Use : 
+
+	test_get_empty_job_env_init job_list_length
+
+	"""
 	def __init__(self):
 		super(test_get_empty_job_env_init,self).__init__("test_get_empty_job_env_init",gdb.COMMAND_USER)
 
@@ -182,6 +255,13 @@ class test_get_empty_job_env_init(gdb.Command):
 
 class insert_job_list_from_file(gdb.Command):
 
+	"""
+	Use : 
+
+	insert_job_list_from_file job_list_name job_list_length file_name
+
+
+	"""
 	def __init__(self):
 		super(insert_job_list_from_file,self).__init__("insert_job_list_from_file",gdb.COMMAND_USER)
 
@@ -208,89 +288,24 @@ class insert_job_list_from_file(gdb.Command):
 
 insert_job_list_from_file()
 
-"""
-insert_job_list_from_file 
-
-Use : 
-
-insert_job_list_from_file job_list_name job_list_length file_name
-
-
-"""
 
 
 test_get_empty_job_env_init()
 
-"""
-
-test_get_empty_job_env_init
-
-Use : 
-
-test_get_empty_job_env_init job_list_length
-
-"""
-
 
 init_reader_dependency()
 
-"""
-init_env_and_build_reader_dependency
-
-Use : 
-
-init_env_and_build_reader_dependency file_name
-
-Test_main.c parameter : 
-
-"""
 
 init_writer_test_job_data_from_file()
 
-"""
-init_writer_test_job_data_from_file
-
-Use :
-
-init_writer_test_job_data_from_file file_name
-
-Test_main.c parameter : 
-
-test_writer_num , test_job_length , test_job_list 
-
-"""
 
 init_job_list()
 
-"""
-init_job_list
-
-Use : 
-
-init_job_list job_list_length reader_number
-
-Test_main.c parameter :
-
-none
-
-"""
 
 init_test_job_list_and_reader_dependency()
 
 
-"""
-init_test_job_list_and_reader_dependency
 
-Use :
-
-init_test_job_list_and_reader_dependency job_list_info_file_name
-
- reader_dependency_info_file_name
-
-Test_main.c parameter :
-
-test_reader_num
-
-"""
+test_gdb_python_command()
 
 
