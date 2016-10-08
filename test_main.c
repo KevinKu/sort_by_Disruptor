@@ -47,6 +47,15 @@ If want to go next step,change this value.
 
 */
 
+static int end = 1;
+
+/*
+
+test for writers and readers
+
+*/
+
+
 static int test_thread_num;
 
 /*
@@ -69,7 +78,7 @@ Use : test_multi_thread_get_Max_available_job_index
       test_multi_thread_writer_and_reader
 
 
-Gdb test command : init_env_and_build_reader_dependency
+Gdb test command : 
 
 
 */
@@ -149,6 +158,9 @@ i = 0;
 
 
 /*create reader thread. One thread has only one reader.*/
+
+while(end == 1){}
+
 
 
 return;

@@ -1,6 +1,15 @@
 import gdb
 import string
 
+class write_writer_result_to_file(gdb.Command):
+
+	def __init__(self):
+
+		super(write_writer_result_to_file,self).__init__("write_writer_result_to_file",gdb.COMMAND_USER)
+
+	def invoke(self,arg,from_tty):
+
+
 class test_gdb_python_command(gdb.Command):
 
 	"test help"
@@ -307,5 +316,7 @@ init_test_job_list_and_reader_dependency()
 
 
 test_gdb_python_command()
+
+write_writer_result_to_file()
 
 
