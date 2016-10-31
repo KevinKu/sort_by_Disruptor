@@ -1,3 +1,0 @@
-Num     Type           Disp Enb Address    What
-1       breakpoint     keep y   0x08048936 in main at test_main.c:348
-	breakpoint already hit 1 time

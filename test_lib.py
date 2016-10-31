@@ -1,4 +1,8 @@
+import string
+
+
+def p_set_value():
 
 
 
-def p_
+	return command
